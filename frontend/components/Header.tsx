@@ -3,6 +3,9 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useEffect, useState } from "react";
+import { useAuth } from "@/store/auth";
+import { getAuthToken } from "@/lib/api";
+import { useRouter } from "next/navigation";
 
 type NavItem = {
   label: string;
@@ -20,6 +23,23 @@ const navItems: NavItem[] = [
 export default function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+  const { user, logout } = useAuth();
+  const [isAdmin, setIsAdmin] = useState(false);
+  const router = useRouter();
+
+  useEffect(() => {
+    const token = getAuthToken();
+    if (!token) {
+      setIsAdmin(false);
+      return;
+    }
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1] || ''));
+      setIsAdmin(payload?.role === 'admin' || payload?.scope === 'admin');
+    } catch {
+      setIsAdmin(false);
+    }
+  }, [user]);
 
   useEffect(() => {
     function onEsc(e: KeyboardEvent) {
@@ -83,21 +103,48 @@ export default function Header() {
             </div>
           ))}
           <div className="ml-4 flex items-center gap-3">
-            <button
-              aria-label="Search"
-              className="rounded p-2 text-neutral-300 hover:bg-neutral-800 hover:text-white"
-            >
-              <span className="sr-only">Search</span>
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-5 w-5">
-                <path fillRule="evenodd" d="M10.5 3.75a6.75 6.75 0 015.364 10.83l3.278 3.278a.75.75 0 11-1.06 1.06l-3.279-3.277A6.75 6.75 0 1110.5 3.75zm0 1.5a5.25 5.25 0 100 10.5 5.25 5.25 0 000-10.5z" clipRule="evenodd" />
-              </svg>
-            </button>
-            <Link href="/sign-up" className="rounded-full border border-orange-600 px-5 py-2 text-sm font-medium text-white hover:bg-orange-600">
-              Sign up
-            </Link>
-            <Link href="/login" className="rounded-full border border-orange-600/60 px-5 py-2 text-sm font-medium text-orange-400 hover:border-orange-500 hover:text-orange-300">
-              Login
-            </Link>
+            {isAdmin && (
+              <div className="relative group">
+                <button className="text-sm font-medium text-neutral-200 hover:text-white">Admin</button>
+                <div className="absolute right-0 mt-3 hidden w-52 rounded-md border border-neutral-800 bg-neutral-900 p-2 shadow-xl group-hover:block group-focus-within:block">
+                  <Link href="/admin/users" className="block rounded px-3 py-2 text-sm text-neutral-200 hover:bg-neutral-800 hover:text-white">Users</Link>
+                  <Link href="/admin/rewards" className="block rounded px-3 py-2 text-sm text-neutral-200 hover:bg-neutral-800 hover:text-white">Rewards</Link>
+                  <Link href="/admin/redemptions" className="block rounded px-3 py-2 text-sm text-neutral-200 hover:bg-neutral-800 hover:text-white">Redemptions</Link>
+                  <Link href="/admin/partners" className="block rounded px-3 py-2 text-sm text-neutral-200 hover:bg-neutral-800 hover:text-white">Partners</Link>
+                  <Link href="/admin/transactions" className="block rounded px-3 py-2 text-sm text-neutral-200 hover:bg-neutral-800 hover:text-white">Transactions</Link>
+                  <Link href="/admin/kyc" className="block rounded px-3 py-2 text-sm text-neutral-200 hover:bg-neutral-800 hover:text-white">KYC</Link>
+                </div>
+              </div>
+            )}
+            {user && (
+              <div className="relative group">
+                <button className="text-sm font-medium text-neutral-200 hover:text-white">Account</button>
+                <div className="absolute right-0 mt-3 hidden w-52 rounded-md border border-neutral-800 bg-neutral-900 p-2 shadow-xl group-hover:block group-focus-within:block">
+                  <Link href="/dashboard" className="block rounded px-3 py-2 text-sm text-neutral-200 hover:bg-neutral-800 hover:text-white">Dashboard</Link>
+                  <Link href="/account/achievements" className="block rounded px-3 py-2 text-sm text-neutral-200 hover:bg-neutral-800 hover:text-white">My Achievements</Link>
+                  <Link href="/account/kyc" className="block rounded px-3 py-2 text-sm text-neutral-200 hover:bg-neutral-800 hover:text-white">My KYC</Link>
+                </div>
+              </div>
+            )}
+            {user ? (
+              <>
+                <Link href="/dashboard" className="rounded-full border border-orange-600 px-5 py-2 text-sm font-medium text-white hover:bg-orange-600">
+                  Dashboard
+                </Link>
+                <button onClick={() => { logout(); router.push('/'); }} className="rounded-full border border-orange-600/60 px-5 py-2 text-sm font-medium text-orange-400 hover:border-orange-500 hover:text-orange-300">
+                  Logout
+                </button>
+              </>
+            ) : (
+              <>
+                <Link href="/sign-up" className="rounded-full border border-orange-600 px-5 py-2 text-sm font-medium text-white hover:bg-orange-600">
+                  Sign up
+                </Link>
+                <Link href="/login" className="rounded-full border border-orange-600/60 px-5 py-2 text-sm font-medium text-orange-400 hover:border-orange-500 hover:text-orange-300">
+                  Login
+                </Link>
+              </>
+            )}
           </div>
         </nav>
 
@@ -168,12 +215,25 @@ export default function Header() {
             </div>
           ))}
           <div className="mt-3 flex items-center gap-3">
-            <button className="flex-1 rounded-full border border-orange-600 px-5 py-2 text-sm font-medium text-white hover:bg-orange-600">
-              Sign up
-            </button>
-            <button className="flex-1 rounded-full border border-orange-600/60 px-5 py-2 text-sm font-medium text-orange-400 hover:border-orange-500 hover:text-orange-300">
-              Login
-            </button>
+            {user ? (
+              <>
+                <Link href="/dashboard" className="flex-1 rounded-full border border-orange-600 px-5 py-2 text-sm font-medium text-white hover:bg-orange-600" onClick={() => setMobileOpen(false)}>
+                  Dashboard
+                </Link>
+                <button onClick={() => { logout(); setMobileOpen(false); }} className="flex-1 rounded-full border border-orange-600/60 px-5 py-2 text-sm font-medium text-orange-400 hover:border-orange-500 hover:text-orange-300">
+                  Logout
+                </button>
+              </>
+            ) : (
+              <>
+                <Link href="/sign-up" className="flex-1 rounded-full border border-orange-600 px-5 py-2 text-sm font-medium text-white hover:bg-orange-600" onClick={() => setMobileOpen(false)}>
+                  Sign up
+                </Link>
+                <Link href="/login" className="flex-1 rounded-full border border-orange-600/60 px-5 py-2 text-sm font-medium text-orange-400 hover:border-orange-500 hover:text-orange-300" onClick={() => setMobileOpen(false)}>
+                  Login
+                </Link>
+              </>
+            )}
           </div>
         </div>
       </div>
