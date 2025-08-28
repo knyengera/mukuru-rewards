@@ -12,8 +12,16 @@ router.get('/me', requireAuth, async (req: AuthRequest, res) => {
   if (!req.user) return res.status(401).json({ error: 'Unauthorized' });
   const userId = req.user.id;
   const rows = await db
-    .select()
+    .select({
+      achievementId: userAchievements.achievementId,
+      createdAt: userAchievements.createdAt,
+      code: achievements.code,
+      name: achievements.name,
+      description: achievements.description,
+      icon: achievements.icon,
+    })
     .from(userAchievements)
+    .leftJoin(achievements, eq(userAchievements.achievementId, achievements.id))
     .where(eq(userAchievements.userId, userId));
   res.json(rows);
 });
