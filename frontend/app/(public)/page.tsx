@@ -1,8 +1,10 @@
 import CTA from "@/components/CTA";
+import Hero from "@/components/Hero";
 
 export default function Home() {
   return (
     <>
+      <Hero />
       <CTA
         eyebrow="Signing Up is Easy!"
         heading="All you need is a valid ID or passport"
@@ -12,19 +14,19 @@ export default function Home() {
             iconSrc: "/globe.svg",
             iconAlt: "WhatsApp",
             kicker: "WhatsApp",
-            title: "Sign up & collect",
+            title: "Send Money",
             description:
-              "Instantly order and collect your card at selected Clicks stores.",
+              "Send money to your friends and family in seconds.",
             actionLabel: "Learn more",
-            actionHref: "/signup/whatsapp",
+            actionHref: "/send",
           },
           {
             iconSrc: "/window.svg",
             iconAlt: "Find Us",
             kicker: "Find Us",
-            title: "Branch or Info Centre",
+            title: "Earn Rewards",
             description:
-              "Visit your nearest Mukuru Branch and apply for a Mukuru Card.",
+              "Earn rewards for sending and receiving money.",
             actionLabel: "Find us",
             actionHref: "/locations",
           },
@@ -32,9 +34,9 @@ export default function Home() {
             iconSrc: "/file.svg",
             iconAlt: "Get Help",
             kicker: "Get Help",
-            title: "Request a call back",
+            title: "Spend Rewards",
             description:
-              "Request a call back from our team who will help you sign up.",
+              "Spend your rewards on a wide range of products and services.",
             actionLabel: "Request callback",
             actionHref: "/help/callback",
           },

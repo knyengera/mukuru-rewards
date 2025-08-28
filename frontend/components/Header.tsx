@@ -11,11 +11,10 @@ type NavItem = {
 };
 
 const navItems: NavItem[] = [
-  { label: "Personal", children: [{ label: "Overview", href: "/" }] },
   { label: "Send Money", href: "/send" },
-  { label: "Rewards", children: [{ label: "All Rewards", href: "/rewards" }] },
-  { label: "Help & Support", href: "/help" },
-  { label: "About Us", children: [{ label: "Company", href: "/about" }] }
+  { label: "Earn Rewards", href: "/rewards" },
+  { label: "Spend Rewards", href: "/spend" },
+  { label: "About Mukuru Rewards", href: "/about" }
 ];
 
 export default function Header() {
@@ -93,12 +92,12 @@ export default function Header() {
                 <path fillRule="evenodd" d="M10.5 3.75a6.75 6.75 0 015.364 10.83l3.278 3.278a.75.75 0 11-1.06 1.06l-3.279-3.277A6.75 6.75 0 1110.5 3.75zm0 1.5a5.25 5.25 0 100 10.5 5.25 5.25 0 000-10.5z" clipRule="evenodd" />
               </svg>
             </button>
-            <button className="rounded-full border border-orange-600 px-5 py-2 text-sm font-medium text-white hover:bg-orange-600">
+            <Link href="/sign-up" className="rounded-full border border-orange-600 px-5 py-2 text-sm font-medium text-white hover:bg-orange-600">
               Sign up
-            </button>
-            <button className="rounded-full border border-orange-600/60 px-5 py-2 text-sm font-medium text-orange-400 hover:border-orange-500 hover:text-orange-300">
+            </Link>
+            <Link href="/login" className="rounded-full border border-orange-600/60 px-5 py-2 text-sm font-medium text-orange-400 hover:border-orange-500 hover:text-orange-300">
               Login
-            </button>
+            </Link>
           </div>
         </nav>
 
