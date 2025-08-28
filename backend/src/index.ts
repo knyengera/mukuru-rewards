@@ -9,6 +9,7 @@ import usersRouter from './routes/users';
 import adminRouter from './routes/admin';
 import leaderboardRouter from './routes/leaderboard';
 import kycRouter from './routes/kyc';
+import achievementsRouter from './routes/achievements';
 
 dotenv.config();
 
@@ -28,6 +29,7 @@ app.use('/api/auth', authRouter);
 app.use('/api/admin', adminRouter);
 app.use('/api/leaderboard', leaderboardRouter);
 app.use('/api/kyc', kycRouter);
+app.use('/api/achievements', achievementsRouter);
 
 const port = process.env.PORT ? Number(process.env.PORT) : 4000;
 app.listen(port, () => {

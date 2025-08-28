@@ -3,7 +3,7 @@ import { Router } from 'express';
 import { z } from 'zod';
 
 import { db } from '../db/client';
-import { pointsLedger, transactions, users } from '../db/schema';
+import { achievements, pointsLedger, transactions, userAchievements, users } from '../db/schema';
 import { calculateBasePoints, determineTier, applyTierMultiplier } from '../lib/points';
 import { sendEmail } from '../lib/email';
 import { transactionSentEmail } from '../emails/templates';
@@ -55,6 +55,35 @@ router.post('/send', requireAuth, async (req: AuthRequest, res) => {
     try {
       const { subject, html } = transactionSentEmail(amount, currency, earned);
       await sendEmail({ to: user.email, subject, html });
+    } catch (_ignored) {}
+
+    // Simple achievement unlocks
+    try {
+      // First Flight!: first transaction
+      const priorTx = await db.select().from(transactions).where(eq(transactions.userId, authedUserId));
+      if (priorTx.length === 1) {
+        const [ach] = await db.select().from(achievements).where(eq(achievements.code, 'first_flight'));
+        if (ach) {
+          await db.insert(userAchievements).values({ userId: authedUserId, achievementId: ach.id });
+        }
+      }
+      // High Flier!: send over R1000 in one go
+      if (amount >= 1000) {
+        const [ach] = await db.select().from(achievements).where(eq(achievements.code, 'high_flier'));
+        if (ach) {
+          await db.insert(userAchievements).values({ userId: authedUserId, achievementId: ach.id });
+        }
+      }
+      // Frequent Flyer!: 5+ sends
+      if (priorTx.length >= 5) {
+        const [ach] = await db
+          .select()
+          .from(achievements)
+          .where(eq(achievements.code, 'frequent_flyer'));
+        if (ach) {
+          await db.insert(userAchievements).values({ userId: authedUserId, achievementId: ach.id });
+        }
+      }
     } catch (_ignored) {}
 
     res.json({

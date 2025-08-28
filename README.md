@@ -93,6 +93,7 @@ Authenticated (user) endpoints
 - GET `/api/users/:id/balance` → points balance + tier (self or admin)
 - GET `/api/users/:id/history` → transactions & ledger (self or admin)
 - POST `/api/rewards/redeem` → spend points, email confirmation
+- GET `/api/achievements/me` → list unlocked achievements (self)
 - POST `/api/kyc/submit` → submit or update KYC (self)
 - GET `/api/kyc/me` → view own KYC record
 

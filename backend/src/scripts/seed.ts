@@ -10,6 +10,8 @@ import {
   rewards,
   transactions,
   users,
+  achievements,
+  userAchievements,
 } from '../db/schema';
 import { hashPassword } from '../lib/crypto';
 import { calculateBasePoints, determineTier, applyTierMultiplier } from '../lib/points';
@@ -89,6 +91,16 @@ async function main() {
     ]);
   }
   const rewardsList = await db.select().from(rewards);
+
+  // Achievements
+  const existingAchievements = await db.select().from(achievements);
+  if (existingAchievements.length === 0) {
+    await db.insert(achievements).values([
+      { code: 'first_flight', name: 'First Flight!', description: 'Your first send!', icon: '🛫' },
+      { code: 'high_flier', name: 'High Flier!', description: 'Sent over R1000 in one go', icon: '💸' },
+      { code: 'frequent_flyer', name: 'Frequent Flyer!', description: 'Completed 5 sends', icon: '✈️' },
+    ]);
+  }
 
   // Transactions and earning
   await awardPoints(alice.id, 500, 'ZAR');
