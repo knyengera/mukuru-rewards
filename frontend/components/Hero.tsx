@@ -1,9 +1,37 @@
-import Image from "next/image";
+"use client";
+import Link from "next/link";
+import { useState } from "react";
+import { useAuth } from "@/store/auth";
+import { apiPost } from "@/lib/api";
+import { popConfetti } from "@/lib/confetti";
+import { useRouter } from "next/navigation";
 import SendMoneyWidget from "./SendMoneyWidget";
 
 export default function Hero() {
+  const { user } = useAuth();
+  const router = useRouter();
+  const [toast, setToast] = useState<string | null>(null);
+
+  async function handleCalculate({ sendAmount, sendCurrency }: { sendAmount: number; sendCurrency: string }) {
+    if (!user) {
+      router.push('/login');
+      return;
+    }
+    await apiPost(`/api/transactions/send`, { amount: sendAmount, currency: sendCurrency || 'ZAR' });
+    popConfetti();
+    setToast("Sent successfully! 🎉 You earned Mukuru Miles.");
+    setTimeout(() => setToast(null), 3000);
+  }
   return (
-    <section className="relative overflow-hidden bg-[#EA5B3A]">
+    <section
+      className="relative overflow-hidden bg-neutral-900"
+      style={{
+        backgroundImage: 'url(/send-money-home.webp)',
+        backgroundRepeat: 'no-repeat',
+        backgroundPosition: 'center bottom',
+        backgroundSize: 'contain',
+      }}
+    >
       <div className="mx-auto max-w-7xl px-4 py-10 md:px-6 md:py-14">
         <div className="grid items-center gap-8 md:grid-cols-[1.1fr_1fr_0.9fr]">
           {/* Left copy */}
@@ -17,14 +45,14 @@ export default function Hero() {
             </p>
             <div className="mt-6 flex flex-wrap items-center gap-3">
               <a
-                href="#send-money"
+                href="/send"
                 className="inline-flex items-center gap-2 rounded-full bg-white px-6 py-3 text-sm font-semibold text-[#EA5B3A] hover:bg-neutral-100"
               >
                 Send money now
                 <span>🚀</span>
               </a>
               <a
-                href="#signup"
+                href="/sign-up"
                 className="inline-flex items-center gap-2 rounded-full border border-white/80 px-6 py-3 text-sm font-semibold text-white hover:bg-white/10"
               >
                 Sign up
@@ -32,20 +60,13 @@ export default function Hero() {
             </div>
           </div>
 
-          {/* Center image */}
-          <div className="relative mx-auto hidden h-[440px] w-full max-w-[520px] md:block">
-            <Image
-              src="/send-money-home.webp"
-              alt="Mukuru send money hero"
-              fill
-              className="object-contain"
-              priority
-            />
-          </div>
+          {/* Center column spacer */}
+          <div className="hidden h-[440px] w-full max-w-[520px] md:block" />
 
           {/* Right widget */}
           <div id="send-money" className="md:justify-self-end">
-            <SendMoneyWidget />
+              <SendMoneyWidget onCalculate={handleCalculate} />
+              {toast && <p className="mt-3 text-sm text-green-700">{toast}</p>}
           </div>
         </div>
       </div>
