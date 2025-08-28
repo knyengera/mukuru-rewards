@@ -6,6 +6,7 @@ import { db } from '../db/client';
 import { pointsLedger, redemptions, rewards, users } from '../db/schema';
 import { sendEmail } from '../lib/email';
 import { rewardRedeemedEmail } from '../emails/templates';
+import { requireAuth, type AuthRequest } from '../middleware/auth';
 
 const router = Router();
 
@@ -19,35 +20,37 @@ router.get('/', async (_req, res) => {
   }
 });
 
-const redeemSchema = z.object({ userId: z.string().uuid(), rewardId: z.string().uuid() });
+const redeemSchema = z.object({ rewardId: z.string().uuid() });
 
-router.post('/redeem', async (req, res) => {
+router.post('/redeem', requireAuth, async (req: AuthRequest, res) => {
   const parse = redeemSchema.safeParse(req.body);
   if (!parse.success) return res.status(400).json({ error: parse.error.flatten() });
-  const { userId, rewardId } = parse.data;
+  const { rewardId } = parse.data;
+  const authedUserId = req.user?.id;
+  if (!authedUserId) return res.status(401).json({ error: 'Unauthorized' });
 
   try {
-    const [user] = await db.select().from(users).where(eq(users.id, userId));
+    const [user] = await db.select().from(users).where(eq(users.id, authedUserId));
     if (!user) return res.status(404).json({ error: 'User not found' });
 
     const [reward] = await db.select().from(rewards).where(eq(rewards.id, rewardId));
     if (!reward || !reward.active) return res.status(404).json({ error: 'Reward not available' });
 
-    const credits = await db.select({ p: pointsLedger.points }).from(pointsLedger).where(eq(pointsLedger.userId, userId));
+    const credits = await db.select({ p: pointsLedger.points }).from(pointsLedger).where(eq(pointsLedger.userId, authedUserId));
     const debits = await db
       .select({ p: pointsLedger.points })
       .from(pointsLedger)
-      .where(eq(pointsLedger.userId, userId));
+      .where(eq(pointsLedger.userId, authedUserId));
     const currentBalance = credits.reduce((s, r) => s + r.p, 0) - debits.reduce((s, r) => s + r.p, 0);
     if (currentBalance < reward.pointsCost) return res.status(400).json({ error: 'Insufficient points' });
 
     const [redemption] = await db
       .insert(redemptions)
-      .values({ userId, rewardId, pointsSpent: reward.pointsCost, status: 'completed' })
+      .values({ userId: authedUserId, rewardId, pointsSpent: reward.pointsCost, status: 'completed' })
       .returning();
 
     await db.insert(pointsLedger).values({
-      userId,
+      userId: authedUserId,
       type: 'debit',
       points: reward.pointsCost,
       reason: `Redeem ${reward.name}`,

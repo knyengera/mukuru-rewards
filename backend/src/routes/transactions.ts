@@ -7,29 +7,31 @@ import { pointsLedger, transactions, users } from '../db/schema';
 import { calculateBasePoints, determineTier, applyTierMultiplier } from '../lib/points';
 import { sendEmail } from '../lib/email';
 import { transactionSentEmail } from '../emails/templates';
+import { requireAuth, type AuthRequest } from '../middleware/auth';
 
 const router = Router();
 
 const sendSchema = z.object({
-  userId: z.string().uuid(),
   amount: z.number().positive(),
   currency: z.string().default('ZAR'),
 });
 
-router.post('/send', async (req, res) => {
+router.post('/send', requireAuth, async (req: AuthRequest, res) => {
   const parse = sendSchema.safeParse(req.body);
   if (!parse.success) return res.status(400).json({ error: parse.error.flatten() });
-  const { userId, amount, currency } = parse.data;
+  const { amount, currency } = parse.data;
+  const authedUserId = req.user?.id;
+  if (!authedUserId) return res.status(401).json({ error: 'Unauthorized' });
 
   try {
     // Create transaction
     const [tx] = await db
       .insert(transactions)
-      .values({ userId, amount: String(amount), currency })
+      .values({ userId: authedUserId, amount: String(amount), currency })
       .returning();
 
     // Fetch user for tier
-    const [user] = await db.select().from(users).where(eq(users.id, userId));
+    const [user] = await db.select().from(users).where(eq(users.id, authedUserId));
     if (!user) return res.status(404).json({ error: 'User not found' });
 
     const base = calculateBasePoints(amount);
@@ -38,7 +40,7 @@ router.post('/send', async (req, res) => {
 
     // Ledger credit
     await db.insert(pointsLedger).values({
-      userId,
+      userId: authedUserId,
       transactionId: tx.id,
       type: 'credit',
       points: earned,
@@ -48,7 +50,7 @@ router.post('/send', async (req, res) => {
     // Update lifetime points and tier if needed
     const newLifetime = user.lifetimePoints + earned;
     const newTier = determineTier(newLifetime);
-    await db.update(users).set({ lifetimePoints: newLifetime, tier: newTier }).where(eq(users.id, userId));
+    await db.update(users).set({ lifetimePoints: newLifetime, tier: newTier }).where(eq(users.id, authedUserId));
 
     try {
       const { subject, html } = transactionSentEmail(amount, currency, earned);

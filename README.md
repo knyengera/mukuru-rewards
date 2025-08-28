@@ -15,7 +15,8 @@ frontend/
 backend/
 - Express (TypeScript)
 - Drizzle ORM (Postgres via Supabase)
-- Routes: `/api/auth`, `/api/transactions`, `/api/users`, `/api/rewards`
+- Routes: `/api/auth`, `/api/transactions`, `/api/users`, `/api/rewards`, `/api/admin/*`
+- RBAC: roles `client` (default) and `admin`; admin routes require JWT with admin role
 - Email via Resend
 - Lint/format: ESLint (flat) + Prettier
 
@@ -74,16 +75,31 @@ npm run dev
 ---
 
 ## Backend Routes (summary)
+
+Public (no auth required)
+- GET `/api/health`
 - POST `/api/auth/register` → verify email via Resend
-- POST `/api/auth/login` → JWT token
+- POST `/api/auth/login` → JWT token (payload contains `sub`, `role`, `scope`)
 - GET `/api/auth/verify?token=...` → confirm email
 - POST `/api/auth/forgot-password` → reset link
 - POST `/api/auth/reset-password` → set new password
-- POST `/api/transactions/send` → create tx, award points, email notification
-- GET `/api/users/:id/balance` → points balance + tier
-- GET `/api/users/:id/history` → transactions & ledger
 - GET `/api/rewards` → list active rewards
+- GET `/api/leaderboard/rewards?limit=50&type=earned|redeemed&range=weekly|all`
+  - Default: `type=earned&range=weekly` (sum of credited points in last 7 days)
+  - `type=redeemed`: order by count of completed redemptions
+
+Authenticated (user) endpoints
+- POST `/api/transactions/send` → create tx, award points, email notification
+- GET `/api/users/:id/balance` → points balance + tier (self or admin)
+- GET `/api/users/:id/history` → transactions & ledger (self or admin)
 - POST `/api/rewards/redeem` → spend points, email confirmation
+
+Admin (JWT admin role required)
+- GET `/api/admin/users`
+- POST `/api/admin/rewards`, PATCH `/api/admin/rewards/:id`
+- GET `/api/admin/redemptions`
+- GET `/api/admin/partners`, POST `/api/admin/partners`, PATCH `/api/admin/partners/:id`
+- GET `/api/admin/transactions`
 
 ---
 
