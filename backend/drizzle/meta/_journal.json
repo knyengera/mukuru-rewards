@@ -15,6 +15,13 @@
       "when": 1756410737211,
       "tag": "0001_robust_nico_minoru",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1756411822904,
+      "tag": "0002_nervous_beyonder",
+      "breakpoints": true
     }
   ]
 }

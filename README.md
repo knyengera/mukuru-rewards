@@ -93,6 +93,8 @@ Authenticated (user) endpoints
 - GET `/api/users/:id/balance` → points balance + tier (self or admin)
 - GET `/api/users/:id/history` → transactions & ledger (self or admin)
 - POST `/api/rewards/redeem` → spend points, email confirmation
+- POST `/api/kyc/submit` → submit or update KYC (self)
+- GET `/api/kyc/me` → view own KYC record
 
 Admin (JWT admin role required)
 - GET `/api/admin/users`
@@ -100,6 +102,8 @@ Admin (JWT admin role required)
 - GET `/api/admin/redemptions`
 - GET `/api/admin/partners`, POST `/api/admin/partners`, PATCH `/api/admin/partners/:id`
 - GET `/api/admin/transactions`
+- GET `/api/kyc/admin/list` → list KYC submissions
+- POST `/api/kyc/admin/review/:userId` → approve/reject KYC
 
 ---
 

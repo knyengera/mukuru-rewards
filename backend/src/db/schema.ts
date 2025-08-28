@@ -3,6 +3,7 @@ export const userRoleEnum = pgEnum('user_role', ['client', 'admin']);
 
 export const ledgerTypeEnum = pgEnum('ledger_type', ['credit', 'debit']);
 export const redemptionStatusEnum = pgEnum('redemption_status', ['pending', 'completed', 'cancelled']);
+export const kycStatusEnum = pgEnum('kyc_status', ['pending', 'approved', 'rejected']);
 
 export const users = pgTable('users', {
   id: uuid('id').primaryKey().defaultRandom(),
@@ -65,6 +66,23 @@ export const partners = pgTable('partners', {
   contactEmail: text('contact_email'),
   active: boolean('active').notNull().default(true),
   createdAt: timestamp('created_at', { withTimezone: false }).notNull().defaultNow(),
+});
+
+export const kycs = pgTable('kycs', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  userId: uuid('user_id').notNull().references(() => users.id),
+  status: kycStatusEnum('status').notNull().default('pending'),
+  firstName: text('first_name').notNull(),
+  lastName: text('last_name').notNull(),
+  idNumber: text('id_number').notNull(),
+  country: text('country').notNull(),
+  documentType: text('document_type').notNull(),
+  documentNumber: text('document_number').notNull(),
+  documentUrl: text('document_url'),
+  submittedAt: timestamp('submitted_at').notNull().defaultNow(),
+  reviewedAt: timestamp('reviewed_at'),
+  reviewedBy: uuid('reviewed_by').references(() => users.id),
+  notes: text('notes'),
 });
 
 export const achievements = pgTable('achievements', {
