@@ -1,0 +1,256 @@
+{
+  "info": {
+    "_postman_id": "a3d6b8a3-6c64-4a4f-94c0-9f6d7a8b7c01",
+    "name": "Mukuru Rewards API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Postman collection for Mukuru Rewards backend (Express + Drizzle). Use variables baseUrl, token, and adminToken."
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:4000" },
+    { "key": "token", "value": "" },
+    { "key": "adminToken", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "Public",
+      "item": [
+        {
+          "name": "Health",
+          "request": { "method": "GET", "url": "{{baseUrl}}/api/health" }
+        },
+        {
+          "name": "Auth - Register",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Test User\",\n  \"email\": \"test@example.com\",\n  \"password\": \"Password123!\"\n}"
+            },
+            "url": "{{baseUrl}}/api/auth/register"
+          }
+        },
+        {
+          "name": "Auth - Login",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"test@example.com\",\n  \"password\": \"Password123!\"\n}"
+            },
+            "url": "{{baseUrl}}/api/auth/login"
+          }
+        },
+        {
+          "name": "Auth - Verify",
+          "request": { "method": "GET", "url": "{{baseUrl}}/api/auth/verify?token={{verificationToken}}" }
+        },
+        {
+          "name": "Auth - Forgot Password",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "body": { "mode": "raw", "raw": "{\n  \"email\": \"test@example.com\"\n}" },
+            "url": "{{baseUrl}}/api/auth/forgot-password"
+          }
+        },
+        {
+          "name": "Auth - Reset Password",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "body": { "mode": "raw", "raw": "{\n  \"token\": \"<paste-token>\",\n  \"password\": \"NewPassword123!\"\n}" },
+            "url": "{{baseUrl}}/api/auth/reset-password"
+          }
+        },
+        {
+          "name": "Rewards - List (Public)",
+          "request": { "method": "GET", "url": "{{baseUrl}}/api/rewards" }
+        },
+        {
+          "name": "Leaderboard - Rewards",
+          "request": { "method": "GET", "url": "{{baseUrl}}/api/leaderboard/rewards?limit=50&type=earned&range=weekly" }
+        }
+      ]
+    },
+    {
+      "name": "User (Auth)",
+      "item": [
+        {
+          "name": "Transactions - Send",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"amount\": 500,\n  \"currency\": \"ZAR\"\n}" },
+            "url": "{{baseUrl}}/api/transactions/send"
+          }
+        },
+        {
+          "name": "Users - Balance (Self)",
+          "request": {
+            "method": "GET",
+            "header": [ { "key": "Authorization", "value": "Bearer {{token}}" } ],
+            "url": "{{baseUrl}}/api/users/{{userId}}/balance"
+          }
+        },
+        {
+          "name": "Users - History (Self)",
+          "request": {
+            "method": "GET",
+            "header": [ { "key": "Authorization", "value": "Bearer {{token}}" } ],
+            "url": "{{baseUrl}}/api/users/{{userId}}/history?limit=50"
+          }
+        },
+        {
+          "name": "Rewards - Redeem",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"rewardId\": \"{{rewardId}}\"\n}" },
+            "url": "{{baseUrl}}/api/rewards/redeem"
+          }
+        },
+        {
+          "name": "KYC - Submit/Update",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"firstName\": \"Alice\",\n  \"lastName\": \"Client\",\n  \"idNumber\": \"ALC123456\",\n  \"country\": \"ZA\",\n  \"documentType\": \"ID\",\n  \"documentNumber\": \"ID-ALC-123\",\n  \"documentUrl\": \"https://example.com/doc.pdf\"\n}"
+            },
+            "url": "{{baseUrl}}/api/kyc/submit"
+          }
+        },
+        {
+          "name": "KYC - Me",
+          "request": {
+            "method": "GET",
+            "header": [ { "key": "Authorization", "value": "Bearer {{token}}" } ],
+            "url": "{{baseUrl}}/api/kyc/me"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Admin",
+      "item": [
+        {
+          "name": "Users - List",
+          "request": {
+            "method": "GET",
+            "header": [ { "key": "Authorization", "value": "Bearer {{adminToken}}" } ],
+            "url": "{{baseUrl}}/api/admin/users"
+          }
+        },
+        {
+          "name": "Rewards - Create",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"R10 Airtime\",\n  \"pointsCost\": 50,\n  \"description\": \"Mobile top-up\",\n  \"category\": \"airtime\",\n  \"active\": true\n}"
+            },
+            "url": "{{baseUrl}}/api/admin/rewards"
+          }
+        },
+        {
+          "name": "Rewards - Update",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"active\": false\n}" },
+            "url": "{{baseUrl}}/api/admin/rewards/{{rewardId}}"
+          }
+        },
+        {
+          "name": "Redemptions - List",
+          "request": {
+            "method": "GET",
+            "header": [ { "key": "Authorization", "value": "Bearer {{adminToken}}" } ],
+            "url": "{{baseUrl}}/api/admin/redemptions"
+          }
+        },
+        {
+          "name": "Partners - List",
+          "request": {
+            "method": "GET",
+            "header": [ { "key": "Authorization", "value": "Bearer {{adminToken}}" } ],
+            "url": "{{baseUrl}}/api/admin/partners"
+          }
+        },
+        {
+          "name": "Partners - Create",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"AirtimeCo\",\n  \"contactEmail\": \"ops@airtime.co\"\n}" },
+            "url": "{{baseUrl}}/api/admin/partners"
+          }
+        },
+        {
+          "name": "Partners - Update",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"active\": true\n}" },
+            "url": "{{baseUrl}}/api/admin/partners/{{partnerId}}"
+          }
+        },
+        {
+          "name": "Transactions - List",
+          "request": {
+            "method": "GET",
+            "header": [ { "key": "Authorization", "value": "Bearer {{adminToken}}" } ],
+            "url": "{{baseUrl}}/api/admin/transactions"
+          }
+        },
+        {
+          "name": "KYC - List",
+          "request": {
+            "method": "GET",
+            "header": [ { "key": "Authorization", "value": "Bearer {{adminToken}}" } ],
+            "url": "{{baseUrl}}/api/kyc/admin/list"
+          }
+        },
+        {
+          "name": "KYC - Review",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"status\": \"approved\",\n  \"notes\": \"Looks good\"\n}" },
+            "url": "{{baseUrl}}/api/kyc/admin/review/{{userId}}"
+          }
+        }
+      ]
+    }
+  ]
+}
+
+
