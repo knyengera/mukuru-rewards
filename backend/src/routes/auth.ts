@@ -29,7 +29,7 @@ router.post('/register', async (req, res) => {
     const verificationToken = generateToken(24);
     const [user] = await db
       .insert(users)
-      .values({ name, email, passwordHash, verificationToken })
+      .values({ name, email, passwordHash, verificationToken, role: 'client' })
       .returning();
 
     const appBase = process.env.APP_BASE_URL || 'http://localhost:3000';
@@ -58,7 +58,7 @@ router.post('/login', async (req, res) => {
     const ok = await comparePassword(password, user.passwordHash);
     if (!ok) return res.status(401).json({ error: 'Invalid credentials' });
     if (!user.emailVerifiedAt) return res.status(403).json({ error: 'Email not verified' });
-    const token = signJwt({ sub: user.id });
+    const token = signJwt({ sub: user.id, role: user.role, scope: user.role });
     res.json({ token, user: { id: user.id, email: user.email, name: user.name, tier: user.tier } });
   } catch (err) {
     console.error(err);

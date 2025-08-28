@@ -44,6 +44,10 @@
 ## API (REST)
 Base URL: `/api`
 
+RBAC
+- Roles: `client`, `admin`. JWT includes role; middleware enforces admin access.
+- Admin namespace: `/admin/*` endpoints require admin role.
+
 Auth
 - POST `/auth/register` { name, email, password } → create user, email verify link via Resend
 - POST `/auth/login` { email, password } → JWT token + user
@@ -59,6 +63,13 @@ Transactions/Points
 Rewards
 - GET `/rewards` → list active rewards
 - POST `/redeem` { userId, rewardId } → debit points, create redemption, return updated balance
+
+Admin
+- GET `/admin/users` → list users
+- POST `/admin/rewards` → create reward; PATCH `/admin/rewards/:id` → update
+- GET `/admin/redemptions` → list redemptions
+- GET `/admin/partners` → list; POST `/admin/partners`; PATCH `/admin/partners/:id`
+- GET `/admin/transactions` → list transactions
 
 Gamification (optional)
 - GET `/leaderboard?range=weekly` → top users by weekly points

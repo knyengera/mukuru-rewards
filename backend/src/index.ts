@@ -6,6 +6,7 @@ import rewardsRouter from './routes/rewards';
 import authRouter from './routes/auth';
 import transactionsRouter from './routes/transactions';
 import usersRouter from './routes/users';
+import adminRouter from './routes/admin';
 
 dotenv.config();
 
@@ -22,6 +23,7 @@ app.use('/api/transactions', transactionsRouter);
 app.use('/api/users', usersRouter);
 app.use('/api/rewards', rewardsRouter);
 app.use('/api/auth', authRouter);
+app.use('/api/admin', adminRouter);
 
 const port = process.env.PORT ? Number(process.env.PORT) : 4000;
 app.listen(port, () => {

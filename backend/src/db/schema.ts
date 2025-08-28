@@ -1,4 +1,5 @@
 import { pgEnum, pgTable, text, timestamp, integer, boolean, numeric, uuid } from 'drizzle-orm/pg-core';
+export const userRoleEnum = pgEnum('user_role', ['client', 'admin']);
 
 export const ledgerTypeEnum = pgEnum('ledger_type', ['credit', 'debit']);
 export const redemptionStatusEnum = pgEnum('redemption_status', ['pending', 'completed', 'cancelled']);
@@ -8,6 +9,7 @@ export const users = pgTable('users', {
   name: text('name').notNull(),
   email: text('email').notNull().unique(),
   passwordHash: text('password_hash').notNull(),
+  role: userRoleEnum('role').notNull().default('client'),
   tier: text('tier').notNull().default('bronze'),
   lifetimePoints: integer('lifetime_points').notNull().default(0),
   emailVerifiedAt: timestamp('email_verified_at').$type<Date | null>(),
@@ -54,6 +56,14 @@ export const redemptions = pgTable('redemptions', {
   rewardId: uuid('reward_id').notNull().references(() => rewards.id),
   pointsSpent: integer('points_spent').notNull(),
   status: redemptionStatusEnum('status').notNull().default('completed'),
+  createdAt: timestamp('created_at', { withTimezone: false }).notNull().defaultNow(),
+});
+
+export const partners = pgTable('partners', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  name: text('name').notNull(),
+  contactEmail: text('contact_email'),
+  active: boolean('active').notNull().default(true),
   createdAt: timestamp('created_at', { withTimezone: false }).notNull().defaultNow(),
 });
 
