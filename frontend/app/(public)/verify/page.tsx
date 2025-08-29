@@ -1,12 +1,20 @@
 "use client";
 
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { apiGet } from '@/lib/api';
 import Spinner from '@/components/Spinner';
 
 export default function VerifyAccountPage() {
+  return (
+    <Suspense>
+      <VerifyAccountInner />
+    </Suspense>
+  );
+}
+
+function VerifyAccountInner() {
   const search = useSearchParams();
   const token = search.get('token') || '';
   const [loading, setLoading] = useState(true);
