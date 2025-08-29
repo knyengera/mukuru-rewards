@@ -104,9 +104,10 @@ export default function Header() {
           ))}
           <div className="ml-4 flex items-center gap-3">
             {isAdmin && (
-              <div className="relative group">
+              <div className="relative" onMouseEnter={() => setOpenDropdown('Admin')} onMouseLeave={() => setOpenDropdown(null)}>
                 <button className="text-sm font-medium text-neutral-200 hover:text-white">Admin</button>
-                <div className="absolute right-0 mt-3 hidden w-52 rounded-md border border-neutral-800 bg-neutral-900 p-2 shadow-xl group-hover:block group-focus-within:block">
+                {openDropdown === 'Admin' && (
+                <div className="absolute right-0 top-full z-50 w-52 rounded-md border border-neutral-800 bg-neutral-900 p-2 shadow-xl">
                   <Link href="/admin/users" className="block rounded px-3 py-2 text-sm text-neutral-200 hover:bg-neutral-800 hover:text-white">Users</Link>
                   <Link href="/admin/rewards" className="block rounded px-3 py-2 text-sm text-neutral-200 hover:bg-neutral-800 hover:text-white">Rewards</Link>
                   <Link href="/admin/redemptions" className="block rounded px-3 py-2 text-sm text-neutral-200 hover:bg-neutral-800 hover:text-white">Redemptions</Link>
@@ -114,16 +115,19 @@ export default function Header() {
                   <Link href="/admin/transactions" className="block rounded px-3 py-2 text-sm text-neutral-200 hover:bg-neutral-800 hover:text-white">Transactions</Link>
                   <Link href="/admin/kyc" className="block rounded px-3 py-2 text-sm text-neutral-200 hover:bg-neutral-800 hover:text-white">KYC</Link>
                 </div>
+                )}
               </div>
             )}
             {user && (
-              <div className="relative group">
-                <button className="text-sm font-medium text-neutral-200 hover:text-white">Account</button>
-                <div className="absolute right-0 mt-3 hidden w-52 rounded-md border border-neutral-800 bg-neutral-900 p-2 shadow-xl group-hover:block group-focus-within:block">
+              <div className="relative" onMouseEnter={() => setOpenDropdown('Account')} onMouseLeave={() => setOpenDropdown(null)}>
+                <button className="text-sm font-medium text-neutral-200 hover:text-white">My Account</button>
+                {openDropdown === 'Account' && (
+                <div className="absolute right-0 top-full z-50 w-52 rounded-md border border-neutral-800 bg-neutral-900 p-2 shadow-xl">
                   <Link href="/dashboard" className="block rounded px-3 py-2 text-sm text-neutral-200 hover:bg-neutral-800 hover:text-white">Dashboard</Link>
                   <Link href="/account/achievements" className="block rounded px-3 py-2 text-sm text-neutral-200 hover:bg-neutral-800 hover:text-white">My Achievements</Link>
                   <Link href="/account/kyc" className="block rounded px-3 py-2 text-sm text-neutral-200 hover:bg-neutral-800 hover:text-white">My KYC</Link>
                 </div>
+                )}  
               </div>
             )}
             {user ? (
