@@ -1,0 +1,36 @@
+import cors from 'cors';
+import dotenv from 'dotenv';
+import express from 'express';
+
+import rewardsRouter from './routes/rewards';
+import authRouter from './routes/auth';
+import transactionsRouter from './routes/transactions';
+import usersRouter from './routes/users';
+import adminRouter from './routes/admin';
+import leaderboardRouter from './routes/leaderboard';
+import kycRouter from './routes/kyc';
+import achievementsRouter from './routes/achievements';
+
+dotenv.config();
+
+const app = express();
+const corsOrigin = process.env.CORS_ORIGIN || '*';
+app.use(cors({ origin: corsOrigin }));
+app.use(express.json());
+
+app.get('/api/health', (_req, res) => {
+  res.json({ status: 'ok' });
+});
+
+app.use('/api/transactions', transactionsRouter);
+app.use('/api/users', usersRouter);
+app.use('/api/rewards', rewardsRouter);
+app.use('/api/auth', authRouter);
+app.use('/api/admin', adminRouter);
+app.use('/api/leaderboard', leaderboardRouter);
+app.use('/api/kyc', kycRouter);
+app.use('/api/achievements', achievementsRouter);
+
+export default app;
+
+
