@@ -33,39 +33,36 @@ export default function Home() {
       </section>
 
       <CTA
-        eyebrow="Signing Up is Easy!"
-        heading="All you need is a valid ID or passport"
-        subheading="Choose the option that suits you best to get started."
+        eyebrow="It's simple"
+        heading="Send. Earn. Spend."
+        subheading="Move money, collect Mukuru Miles, and redeem them for great rewards."
         cards={[
           {
             iconSrc: "/globe.svg",
-            iconAlt: "WhatsApp",
-            kicker: "WhatsApp",
-            title: "Send Money",
-            description:
-              "Send money to your friends and family in seconds.",
-            actionLabel: "Learn more",
+            iconAlt: "Send",
+            kicker: "Send",
+            title: "Send money fast",
+            description: "Low-friction transfers to your loved ones.",
+            actionLabel: "Start sending",
             actionHref: "/send",
           },
           {
-            iconSrc: "/window.svg",
-            iconAlt: "Find Us",
-            kicker: "Find Us",
-            title: "Earn Rewards",
-            description:
-              "Earn rewards for sending and receiving money.",
-            actionLabel: "Find us",
-            actionHref: "/locations",
+            iconText: "$",
+            iconAlt: "Earn",
+            kicker: "Earn",
+            title: "Earn Mukuru Miles",
+            description: "Get points on every qualifying transfer.",
+            actionLabel: "See how it works",
+            actionHref: "/rewards",
           },
           {
-            iconSrc: "/file.svg",
-            iconAlt: "Get Help",
-            kicker: "Get Help",
-            title: "Spend Rewards",
-            description:
-              "Spend your rewards on a wide range of products and services.",
-            actionLabel: "Request callback",
-            actionHref: "/help/callback",
+            iconSrc: "/window.svg",
+            iconAlt: "Spend",
+            kicker: "Spend",
+            title: "Spend your rewards",
+            description: "Redeem for airtime, data and digital goodies.",
+            actionLabel: "Browse rewards",
+            actionHref: "/rewards",
           },
         ]}
       />

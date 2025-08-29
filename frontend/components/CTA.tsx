@@ -4,7 +4,8 @@ import Image from "next/image";
 import Link from "next/link";
 
 type CTACard = {
-  iconSrc: string;
+  iconSrc?: string;
+  iconText?: string;
   iconAlt: string;
   kicker: string;
   title: string;
@@ -45,7 +46,13 @@ export default function CTA({ eyebrow, heading, subheading, cards }: CTAProps) {
               className="rounded-2xl border border-neutral-800 bg-neutral-800/60 p-6 text-center shadow-xl"
             >
               <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-neutral-900">
-                <Image src={card.iconSrc} alt={card.iconAlt} width={36} height={36} />
+                {card.iconText ? (
+                  <span className="text-2xl font-bold text-orange-400" aria-hidden="true">{card.iconText}</span>
+                ) : (
+                  card.iconSrc ? (
+                    <Image src={card.iconSrc} alt={card.iconAlt} width={36} height={36} />
+                  ) : null
+                )}
               </div>
               <p className="mt-4 text-sm text-neutral-300">{card.kicker}</p>
               <h3 className="mt-1 text-lg font-semibold text-orange-400">
