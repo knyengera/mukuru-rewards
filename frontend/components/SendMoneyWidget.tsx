@@ -22,6 +22,14 @@ export type SendMoneyWidgetProps = {
     receiveCurrency: string;
     receiveMethod: string;
   }) => void;
+  // Optional enhanced API: overrides button label and submit handler if provided
+  buttonLabel?: string;
+  onSubmit?: (params: {
+    sendAmount: number;
+    sendCurrency: string;
+    receiveCurrency: string;
+    receiveMethod: string;
+  }) => void;
 };
 
 const DEFAULT_SOURCE: CurrencyOption[] = [
@@ -47,6 +55,8 @@ export default function SendMoneyWidget({
   targetCurrencies = DEFAULT_TARGET,
   receiveMethods = DEFAULT_METHODS,
   onCalculate,
+  buttonLabel,
+  onSubmit,
 }: SendMoneyWidgetProps) {
   const [sendAmount, setSendAmount] = useState<string>("");
   const [sendCurrency, setSendCurrency] = useState<string>(sourceCurrencies[0]?.code ?? "ZAR");
@@ -55,12 +65,17 @@ export default function SendMoneyWidget({
 
   function handleCalculate() {
     const amount = Number(sendAmount || 0);
-    onCalculate?.({
+    const payload = {
       sendAmount: amount,
       sendCurrency,
       receiveCurrency,
       receiveMethod,
-    });
+    };
+    if (onSubmit) {
+      onSubmit(payload);
+    } else {
+      onCalculate?.(payload);
+    }
   }
 
   return (
@@ -137,7 +152,7 @@ export default function SendMoneyWidget({
           className="w-full rounded-full bg-[#E85A3B] px-5 py-2 text-sm font-semibold text-white hover:bg-[#d74f33]"
           onClick={handleCalculate}
         >
-          Calculate
+          {buttonLabel ?? 'Calculate'}
         </button>
       </div>
     </div>

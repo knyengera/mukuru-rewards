@@ -15,8 +15,7 @@ type NavItem = {
 
 const navItems: NavItem[] = [
   { label: "Send Money", href: "/send" },
-  { label: "Earn Rewards", href: "/rewards" },
-  { label: "Spend Rewards", href: "/spend" },
+  { label: "Spend Rewards", href: "/rewards" },
   { label: "About Mukuru Rewards", href: "/about" }
 ];
 
