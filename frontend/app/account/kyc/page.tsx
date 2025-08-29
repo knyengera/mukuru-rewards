@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from 'react';
 import { apiGet, apiPost } from '@/lib/api';
+import Spinner from '@/components/Spinner';
 
 type Kyc = {
   status: 'pending' | 'approved' | 'rejected';
@@ -51,7 +52,7 @@ export default function MyKycPage() {
     <div className="mx-auto max-w-2xl p-6">
       <h1 className="mb-4 text-2xl font-bold">My KYC</h1>
       {loading ? (
-        <div className="text-sm text-neutral-500">Loading…</div>
+        <div className="text-sm text-neutral-500"><Spinner label="Loading KYC" /></div>
       ) : (
         <div className="space-y-4">
           <div className="rounded-xl border p-4">

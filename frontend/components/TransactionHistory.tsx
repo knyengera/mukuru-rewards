@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import Spinner from "@/components/Spinner";
 import { apiGet } from "@/lib/api";
 import { useAuth } from "@/store/auth";
 
@@ -22,7 +23,7 @@ export default function TransactionHistory({ limit = 10 }: { limit?: number }) {
   }, [user, limit]);
 
   if (!user) return <div className="text-sm text-neutral-500">Login to see your recent activity.</div>;
-  if (loading) return <div className="text-sm text-neutral-500">Loading…</div>;
+  if (loading) return <div className="text-sm text-neutral-500"><Spinner label="Loading activity" /></div>;
 
   return (
     <div className="rounded-3xl border border-neutral-200 bg-white p-5 shadow-xl">

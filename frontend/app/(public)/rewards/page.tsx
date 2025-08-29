@@ -1,5 +1,6 @@
 'use client';
 import { useEffect, useMemo, useState } from 'react';
+import Spinner from '@/components/Spinner';
 import { apiGet, apiPost } from '@/lib/api';
 import { popConfetti } from '@/lib/confetti';
 import { useAuth } from '@/store/auth';
@@ -128,7 +129,7 @@ export default function Rewards() {
     }
   }
 
-  if (loading) return <div className="p-6">Loading...</div>;
+  if (loading) return <div className="p-6"><Spinner label="Loading rewards" /></div>;
 
   return (
     <div className="p-6">

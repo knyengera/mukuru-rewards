@@ -1,6 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { apiGet } from '@/lib/api';
+import Spinner from '@/components/Spinner';
 
 type Leader = { userId: string; name: string; email: string; pointsEarned?: number; rewardsCount?: number };
 
@@ -35,7 +36,7 @@ export default function LeaderboardPage() {
         </div>
       </div>
       {loading ? (
-        <div className="animate-pulse text-sm text-neutral-500">Loading…</div>
+        <div className="text-sm text-neutral-500"><Spinner label="Loading leaderboard" /></div>
       ) : (
         <ol className="space-y-2">
           {leaders.map((l, i) => (

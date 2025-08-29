@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from 'react';
 import { apiGet } from '@/lib/api';
+import Spinner from '@/components/Spinner';
 
 type Achievement = { achievementId: string; code: string; name: string; description: string; icon?: string; createdAt: string };
 
@@ -20,7 +21,7 @@ export default function MyAchievementsPage() {
     <div className="mx-auto max-w-3xl p-6">
       <h1 className="mb-4 text-2xl font-bold">My Achievements</h1>
       {loading ? (
-        <div className="text-sm text-neutral-500">Loading…</div>
+        <div className="text-sm text-neutral-500"><Spinner label="Loading achievements" /></div>
       ) : rows.length === 0 ? (
         <div className="text-sm text-neutral-600">No badges yet. Make your first send to unlock your first badge!</div>
       ) : (

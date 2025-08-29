@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from 'react';
 import { apiGet } from '@/lib/api';
+import Spinner from '@/components/Spinner';
 
 type Redemption = { id: string; userId: string; rewardId: string; pointsSpent: number; status: string; createdAt: string };
 
@@ -19,7 +20,7 @@ export default function AdminRedemptionsPage() {
     <div className="p-6">
       <h1 className="mb-4 text-2xl font-bold">Admin • Redemptions</h1>
       {loading ? (
-        <div className="text-sm text-neutral-500">Loading…</div>
+        <div className="text-sm text-neutral-500"><Spinner label="Loading redemptions" /></div>
       ) : (
         <table className="w-full text-left text-sm">
           <thead>

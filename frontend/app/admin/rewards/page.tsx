@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from 'react';
 import { apiGet, apiPatch, apiPost } from '@/lib/api';
+import Spinner from '@/components/Spinner';
 
 type Reward = { id: string; name: string; description?: string; pointsCost: number; category?: string; active: boolean };
 
@@ -42,7 +43,7 @@ export default function AdminRewardsPage() {
         </div>
       </div>
       {loading ? (
-        <div className="text-sm text-neutral-500">Loading…</div>
+        <div className="text-sm text-neutral-500"><Spinner label="Loading rewards" /></div>
       ) : (
         <table className="w-full text-left text-sm">
           <thead>

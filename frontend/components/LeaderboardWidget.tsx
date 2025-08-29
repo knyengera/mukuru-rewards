@@ -2,6 +2,7 @@
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { apiGet } from '@/lib/api';
+import Spinner from '@/components/Spinner';
 
 type Leader = { userId: string; name: string; email: string; pointsEarned?: number; rewardsCount?: number };
 
@@ -26,7 +27,7 @@ export default function LeaderboardWidget() {
         <span className="rounded-full bg-[#E85A3B]/10 px-3 py-1 text-xs font-semibold text-[#E85A3B]">Mukuru Miles</span>
       </div>
       {loading ? (
-        <div className="animate-pulse text-sm text-neutral-500">Loading…</div>
+        <div className="text-sm text-neutral-500"><Spinner label="Loading leaders" /></div>
       ) : (
         <ol className="space-y-2">
           {leaders.map((l, idx) => (
